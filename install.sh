@@ -53,18 +53,18 @@ echo "📥 Downloading HoloVitals..."
 cd ~
 [ -d "HoloVitals" ] && mv HoloVitals "HoloVitals.backup.$(date +%s)"
 
-if git clone "https://${PAT}@github.com/cloudbyday90/HoloVitals.git" 2>&1 | grep -q "Cloning"; then
+if git clone "https://${PAT}@github.com/cloudbyday90/HoloVitals.git"; then
     echo "✅ Repository downloaded"
     cd HoloVitals
-    git checkout modular-installer-v2 >/dev/null 2>&1
+    git checkout modular-installer-v2
     echo ""
     echo "=========================================="
     echo "Launching HoloVitals Installer"
     echo "=========================================="
     echo ""
-    sleep 1
+    sleep 2
     cd scripts
-    exec ./install-modular.sh
+    ./install-modular.sh
 else
     echo "❌ Failed to download repository"
     echo ""
