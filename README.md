@@ -5,7 +5,7 @@ Public installer for the HoloVitals application.
 ## 🚀 One-Command Installation
 
 ```bash
-wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/install.sh &amp;&amp; chmod +x install.sh &amp;&amp; ./install.sh
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/install.sh && chmod +x install.sh && ./install.sh
 ```
 
 **That's it!** The script will guide you through the rest.
