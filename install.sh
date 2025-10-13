@@ -53,14 +53,23 @@ sudo apt-get install -y git jq curl wget build-essential unzip >/dev/null 2>&1
 
 echo "  → Installing Node.js 20.x and npm..."
 if ! command -v node &> /dev/null; then
+    echo "    Downloading Node.js setup script..."
     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    echo "    Installing Node.js..."
     sudo apt-get install -y nodejs
+    echo "    Node.js installed: $(node --version)"
 fi
 
-# Ensure npm is installed (sometimes needs separate installation)
+# Ensure npm is installed
 if ! command -v npm &> /dev/null; then
     echo "  → npm not found, installing separately..."
     sudo apt-get install -y npm
+    if command -v npm &> /dev/null; then
+        echo "    npm installed: $(npm --version)"
+    else
+        echo "    ❌ npm installation failed!"
+        exit 1
+    fi
 fi
 
 echo "  → Installing PostgreSQL..."
