@@ -35,7 +35,7 @@ echo "✅ Token received"
 echo ""
 
 # Fix Ubuntu 24.04
-echo "📦 Installing prerequisites..."
+echo "📦 Installing all prerequisites and dependencies..."
 VER=$(lsb_release -rs 2>/dev/null || echo "")
 if [[ "$VER" == "24.04" ]]; then
     echo "  → Fixing Ubuntu 24.04 repositories..."
@@ -45,10 +45,27 @@ if [[ "$VER" == "24.04" ]]; then
     sudo apt-get install -y ca-certificates >/dev/null 2>&1
 fi
 
+echo "  → Updating package lists..."
 sudo apt-get update >/dev/null 2>&1
-sudo apt-get install -y git jq >/dev/null 2>&1
 
-echo "✅ Prerequisites installed"
+echo "  → Installing base packages (git, jq, curl, wget, build-essential)..."
+sudo apt-get install -y git jq curl wget build-essential unzip >/dev/null 2>&1
+
+echo "  → Installing Node.js 20.x and npm..."
+if ! command -v node &> /dev/null; then
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - >/dev/null 2>&1
+    sudo apt-get install -y nodejs >/dev/null 2>&1
+fi
+
+echo "  → Installing PostgreSQL..."
+if ! command -v psql &> /dev/null; then
+    sudo apt-get install -y postgresql postgresql-contrib >/dev/null 2>&1
+fi
+
+echo "✅ All prerequisites installed"
+echo "  ✓ Node.js: $(node --version 2>/dev/null || echo 'not found')"
+echo "  ✓ npm: $(npm --version 2>/dev/null || echo 'not found')"
+echo "  ✓ PostgreSQL: $(psql --version 2>/dev/null | cut -d' ' -f3 || echo 'not found')"
 echo ""
 
 # Clone repository
