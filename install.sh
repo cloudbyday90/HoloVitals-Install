@@ -34,6 +34,37 @@ echo ""
 echo "✅ Token received"
 echo ""
 
+# Check and fix system time
+echo "🕐 Checking system time..."
+CURRENT_TIME=$(date +%s)
+EXPECTED_MIN_TIME=1728000000  # October 2024
+
+if [ "$CURRENT_TIME" -lt "$EXPECTED_MIN_TIME" ]; then
+    echo "⚠️  System time is incorrect: $(date)"
+    echo "  → Syncing time with NTP servers..."
+    
+    # Install NTP tools if needed
+    sudo apt-get update -qq
+    sudo apt-get install -y ntpdate 2>/dev/null || sudo apt-get install -y systemd-timesyncd 2>/dev/null
+    
+    # Try to sync time
+    if command -v ntpdate &amp;> /dev/null; then
+        sudo ntpdate -s time.nist.gov || sudo ntpdate -s pool.ntp.org || true
+    fi
+    
+    # Enable and start systemd-timesyncd if available
+    if command -v timedatectl &amp;> /dev/null; then
+        sudo timedatectl set-ntp true 2>/dev/null || true
+        sudo systemctl restart systemd-timesyncd 2>/dev/null || true
+        sleep 2
+    fi
+    
+    echo "✅ Time synced: $(date)"
+else
+    echo "✅ System time is correct: $(date)"
+fi
+echo ""
+
 # Fix Ubuntu 24.04
 echo "📦 Installing all prerequisites and dependencies..."
 VER=$(lsb_release -rs 2>/dev/null || echo "")
