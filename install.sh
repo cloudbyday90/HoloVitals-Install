@@ -17,16 +17,20 @@ echo "  3. Name: HoloVitals"
 echo "  4. Check: 'repo' (Full control of private repositories)"
 echo "  5. Generate and copy the token"
 echo ""
+echo "⚠️  IMPORTANT: The installer will now wait for you to paste your token."
+echo "   After pasting, press ENTER to continue."
+echo ""
 
-read -sp "Paste your GitHub Personal Access Token: " PAT
-echo ""
-echo ""
+read -p "Paste your GitHub Personal Access Token and press ENTER: " PAT
 
 if [ -z "$PAT" ]; then
+    echo ""
     echo "❌ No token provided"
+    echo "Please run the installer again and provide your GitHub PAT."
     exit 1
 fi
 
+echo ""
 echo "✅ Token received"
 echo ""
 
