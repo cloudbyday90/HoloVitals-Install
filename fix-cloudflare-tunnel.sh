@@ -221,7 +221,64 @@ if systemctl is-active --quiet cloudflared; then
     echo -e "${GREEN}[SUCCESS]${NC} Cloudflare tunnel is running"
 else
     echo -e "${RED}[ERROR]${NC} Cloudflare tunnel failed to start"
-    echo "Check logs: sudo journalctl -u cloudflared -n 50"
+    echo ""
+    echo -e "${BLUE}[DIAGNOSTICS]${NC} Running diagnostics..."
+    echo ""
+    
+    # Check service status
+    echo "=== Service Status ==="
+    sudo systemctl status cloudflared --no-pager | head -20
+    echo ""
+    
+    # Check recent logs
+    echo "=== Recent Logs (last 30 lines) ==="
+    sudo journalctl -u cloudflared -n 30 --no-pager
+    echo ""
+    
+    # Check configuration files
+    echo "=== Configuration Files ==="
+    echo "--- /etc/cloudflared/config.yml ---"
+    if [ -f /etc/cloudflared/config.yml ]; then
+        sudo cat /etc/cloudflared/config.yml
+    else
+        echo "File not found"
+    fi
+    echo ""
+    
+    echo "--- /etc/cloudflared/credentials.json ---"
+    if [ -f /etc/cloudflared/credentials.json ]; then
+        echo "File exists (not showing contents for security)"
+        echo "File permissions: $(ls -l /etc/cloudflared/credentials.json)"
+    else
+        echo "File not found"
+    fi
+    echo ""
+    
+    # Check if cloudflared is installed
+    echo "=== Cloudflared Installation ==="
+    if command -v cloudflared &> /dev/null; then
+        echo "cloudflared version: $(cloudflared --version)"
+    else
+        echo "cloudflared not found in PATH"
+    fi
+    echo ""
+    
+    # Common issues
+    echo "=== Common Issues and Solutions ==="
+    echo ""
+    echo "1. Port 3000 not available:"
+    echo "   Check if application is running: sudo lsof -i :3000"
+    echo ""
+    echo "2. Credentials file format:"
+    echo "   Verify JSON format: sudo cat /etc/cloudflared/credentials.json | jq ."
+    echo ""
+    echo "3. Network connectivity:"
+    echo "   Test connection: ping -c 3 cloudflare.com"
+    echo ""
+    echo "4. Service file issues:"
+    echo "   Check service file: sudo cat /etc/systemd/system/cloudflared.service"
+    echo ""
+    
     exit 1
 fi
 
@@ -240,7 +297,16 @@ if sudo journalctl -u cloudflared -n 50 --no-pager | grep -q "Unauthorized\|Fail
     echo "Recent errors:"
     sudo journalctl -u cloudflared -n 20 --no-pager | grep "ERR"
     echo ""
+    echo -e "${BLUE}[DIAGNOSTICS]${NC} Full error context:"
+    sudo journalctl -u cloudflared -n 50 --no-pager
+    echo ""
     echo -e "${RED}[FAILED]${NC} Tunnel authentication failed"
+    echo ""
+    echo "Possible causes:"
+    echo "1. Token is invalid or expired - get a new token from Cloudflare"
+    echo "2. Tunnel was deleted in Cloudflare dashboard"
+    echo "3. Account permissions changed"
+    echo ""
     exit 1
 else
     echo -e "${GREEN}[SUCCESS]${NC} No authentication errors"
