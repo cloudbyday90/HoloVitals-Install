@@ -61,6 +61,47 @@ After the installer runs, you can choose:
 - Secure-Dev: ~15 minutes
 - Production: ~20 minutes
 
+## 🛠️ Recovery &amp; Fix Scripts
+
+If you encounter issues during installation, we have dedicated fix scripts:
+
+### Phase 03: Database Connection Issues
+```bash
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/fix-database-connection.sh
+chmod +x fix-database-connection.sh
+./fix-database-connection.sh
+```
+
+### Phase 07/08: Migration &amp; Admin User Issues
+```bash
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/fix-phase-07-migration.sh
+chmod +x fix-phase-07-migration.sh
+./fix-phase-07-migration.sh
+```
+
+### Phase 11: Cloudflare Tunnel Issues
+```bash
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/fix-cloudflare-tunnel.sh
+chmod +x fix-cloudflare-tunnel.sh
+./fix-cloudflare-tunnel.sh
+```
+
+### Phase 11: Cloudflare Credentials Format Issues
+If you see "invalid JSON" errors in Cloudflare tunnel logs:
+```bash
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/fix-cloudflare-credentials.sh
+chmod +x fix-cloudflare-credentials.sh
+./fix-cloudflare-credentials.sh
+```
+📖 [Detailed Guide](CLOUDFLARE_CREDENTIALS_FIX.md)
+
+### General Diagnostics
+```bash
+wget https://raw.githubusercontent.com/cloudbyday90/HoloVitals-Install/main/debug-installer.sh
+chmod +x debug-installer.sh
+./debug-installer.sh
+```
+
 ## ❓ Troubleshooting
 
 ### "Failed to download repository"
@@ -85,6 +126,14 @@ Make sure the script is executable:
 ```bash
 chmod +x install.sh
 ```
+
+### Cloudflare Tunnel "Invalid JSON" Error
+
+This occurs when the credentials file is not properly formatted. Use the dedicated fix:
+```bash
+./fix-cloudflare-credentials.sh
+```
+See [CLOUDFLARE_CREDENTIALS_FIX.md](CLOUDFLARE_CREDENTIALS_FIX.md) for details.
 
 ## 🔐 Security Notes
 
